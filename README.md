@@ -3,7 +3,7 @@
 [![GitHub license](https://img.shields.io/github/license/7theta/via-schema.svg)](LICENSE)
 [![Dependencies Status](https://jarkeeper.com/7theta/via-schema/status.svg)](https://jarkeeper.com/7theta/via-schema)
 
-Schema validation for [via](https://github.com/7theta/via) events and subs.
+Malli schema validation, input and output scrubbing for [via](https://github.com/7theta/via) events and subs.
 
 ## Usage
 
