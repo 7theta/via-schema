@@ -56,7 +56,7 @@ on an event response.
    :via/reply {:result (+ a b)}}))
 ```
 
-Additionally, by default via will scrub unrecognized keys from inputs
+Additionally, by default `via-schema` will scrub unrecognized keys from inputs
 and outputs, and attempt to coerce inputs and outputs to match their
 schemas. This option can be enabled/disabled by setting
 `:via-schema.core/coerce` to `true` or `false` in the function meta
