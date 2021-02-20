@@ -85,8 +85,8 @@
                                  (into [])
                                  coerce-params#
                                  (apply f#))]
-                (if (and (map? result#)
-                         (:via/reply result#)
+                (if (and (and (map? result#)
+                              (contains? result# :via/reply))
                          (= 200 (:via/status result#)))
                   (update result# :via/reply coerce-body#)
                   (coerce-body# result#)))
@@ -95,11 +95,11 @@
                       (when-let [schema# (:schema data#)]
                         (let [schema# (m/form schema#)]
                           (when (and (= :multi (first schema#))
-                                     (:via-plus.schema/outstrument (second schema#)))
+                                     (::outstrument (second schema#)))
                             (let [error-data# {:explain data# :human (me/humanize data#)}]
                               (if (or (-> data# :value :via/status)
                                       (-> data# :value :via/reply))
-                                (merge {:via-plus.schema/out-error error-data#}
+                                (merge {::out-error (assoc-in error-data# [:explain :schema] ~orig-ret-schema)}
                                        (reply-error "Output validation failed." 500))
                                 (let [explain# (m/explain ~orig-ret-schema (:value data#))]
                                   (throw (ex-info (.getLocalizedMessage e#) error-data#)))))))))

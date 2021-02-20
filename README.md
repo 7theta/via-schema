@@ -12,18 +12,18 @@ version of a clojure function that is appropriate for use with both
 `signum.subs/reg-sub` and `via.events/reg-sub-via`.
 
 These functions work almost like any normal Clojure function, except
-inputs and output arae both validated when a schema is provided.
+inputs and output are both validated when a schema is provided.
 
 ```clojure
 (:require [via-schema.core :refer [>fn]])
 
 (def add
   (>fn
-   [[a b]]
-   [[:tuple _ number? number?] => number?]
+   [a b]
+   [number? number? => number?]
    (+ a b)))
 
-(add [:your.via.event/add 1 2]) ;; => 3
+(add 1 2) ;; => 3
 ```
 
 You can easily compose the resulting function with a `signum sub`,
