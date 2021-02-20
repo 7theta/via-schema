@@ -14,8 +14,6 @@ version of a clojure function that is appropriate for use with both
 These functions work almost like any normal Clojure function, except
 inputs and output arae both validated when a schema is provided.
 
-Example:
-
 ```clojure
 (:require [via-schema.core :refer [>fn]])
 
@@ -30,8 +28,6 @@ Example:
 
 You can easily compose the resulting function with a `signum sub`,
 or with a `via event`.
-
-Example:
 
 ```clojure
 (:require [signum.subs :refer [reg-sub]])
