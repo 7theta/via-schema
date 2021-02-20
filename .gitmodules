@@ -1,0 +1,3 @@
+[submodule "aave"]
+	path = aave
+	url = https://github.com/teknql/aave.git
