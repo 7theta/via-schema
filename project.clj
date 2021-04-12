@@ -8,7 +8,7 @@
 ;;   the terms of this license.
 ;;   You must not remove this notice, or any others, from this software.
 
-(defproject com.7theta/via-schema "0.1.0"
+(defproject com.7theta/via-schema "0.1.1"
   :description "Schema validation for via events and subs."
   :url "https://github.com/7theta/via"
   :license {:name "Eclipse Public License"
