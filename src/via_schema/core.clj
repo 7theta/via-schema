@@ -6,7 +6,6 @@
             [malli.error :as me]
             [malli.transform :as mt]
             [utilis.fn :refer [fsafe]]
-            [signum.interceptors :refer [->interceptor]]
             [clojure.walk :refer [postwalk]]))
 
 ;;; Declarations
