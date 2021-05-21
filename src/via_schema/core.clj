@@ -47,23 +47,26 @@
   ([message status]
    (reply-error message status nil))
   ([message status data]
-   (merge {:via/status status}
-          (when (or message data)
-            {:via/reply (merge
-                         (when message {:message message})
-                         (when data {:data data}))}))))
+   {:via/reply (merge {:status status}
+                      (when (or message data)
+                        {:body (merge
+                                (when message {:message message})
+                                (when data {:data data}))}))}))
 
 (defn tx-ret-schema
   [schema]
   [:multi {::outstrument true
            :dispatch '(fn [result]
                         (if (and (map? result)
-                                 (contains? result :via/status))
-                          (if (= 200 (:via/status result))
+                                 (contains? result :via/reply))
+                          (if (= 200 (-> result :via/reply :status))
                             :via/reply-ok
                             :via/reply-error)
                           :via/sub))}
-   [:via/reply-ok [:map [:via/reply schema]]]
+   [:via/reply-ok [:map [:via/reply
+                         [:map
+                          [:status :int]
+                          [:body {:optional true} schema]]]]]
    [:via/reply-error 'any?]
    [:via/sub schema]])
 
@@ -86,8 +89,8 @@
                                  (apply f#))]
                 (if (and (and (map? result#)
                               (contains? result# :via/reply))
-                         (= 200 (:via/status result#)))
-                  (update result# :via/reply coerce-body#)
+                         (= 200 (:status (:via/reply result#))))
+                  (update-in result# [:via/reply :body] coerce-body#)
                   (coerce-body# result#)))
               (catch Exception e#
                 (or (when-let [data# (ex-data e#)]
@@ -96,8 +99,7 @@
                           (when (and (= :multi (first schema#))
                                      (::outstrument (second schema#)))
                             (let [error-data# {:explain data# :human (me/humanize data#)}]
-                              (if (or (-> data# :value :via/status)
-                                      (-> data# :value :via/reply))
+                              (if (-> data# :value :via/reply)
                                 (merge {::out-error (assoc-in error-data# [:explain :schema] ~orig-ret-schema)}
                                        (reply-error "Output validation failed." 500 (pr-str data#)))
                                 (let [explain# (m/explain ~orig-ret-schema (:value data#))]
