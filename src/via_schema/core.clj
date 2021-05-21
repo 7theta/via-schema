@@ -100,8 +100,9 @@
                                      (::outstrument (second schema#)))
                             (let [error-data# {:explain data# :human (me/humanize data#)}]
                               (if (-> data# :value :via/reply)
-                                (merge {::out-error (assoc-in error-data# [:explain :schema] ~orig-ret-schema)}
-                                       (reply-error "Output validation failed." 500 (pr-str data#)))
+                                (throw (ex-info "Output validation failed"
+                                                (merge {::out-error (assoc-in error-data# [:explain :schema] ~orig-ret-schema)}
+                                                       (reply-error "Output validation failed." 500 (pr-str data#)))))
                                 (let [explain# (m/explain ~orig-ret-schema (:value data#))]
                                   (throw (ex-info (.getLocalizedMessage e#) error-data#)))))))))
                     (throw e#))))))))
