@@ -8,13 +8,14 @@
 ;;   the terms of this license.
 ;;   You must not remove this notice, or any others, from this software.
 
-(defproject com.7theta/via-schema "0.2.0"
+(defproject com.7theta/via-schema "0.3.0"
   :description "Schema validation for via events and subs."
   :url "https://github.com/7theta/via"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.10.2"]
                  [com.7theta/utilis "1.12.2"]
+                 [com.7theta/via "8.1.0"]
                  [borkdude/sci "0.2.3"]
                  [metosin/malli "0.2.1"]]
   :source-paths ["src" "aave/src"])
