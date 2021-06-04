@@ -15,7 +15,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.10.2"]
                  [com.7theta/utilis "1.12.2"]
-                 [com.7theta/via "8.1.0"]
+                 [com.7theta/via "8.1.2"]
                  [borkdude/sci "0.2.3"]
                  [metosin/malli "0.2.1"]]
   :source-paths ["src" "aave/src"])
