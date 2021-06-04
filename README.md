@@ -45,9 +45,9 @@ thing when it comes to applying the schema to the `:via/reply` field
 on an event response. 
 
 ```clojure
-(:require [via.events :refer [reg-event-via]])
+(:require [signum.events :as se])
 
-(reg-event-via
+(se/reg-event
  :your.via.event/add
  (>fn
   [_ [_ a b]]

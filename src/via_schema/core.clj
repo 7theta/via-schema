@@ -43,16 +43,6 @@
   [x]
   (postwalk #(if (underscore? %) 'any? %) x))
 
-(defn reply-error
-  ([message status]
-   (reply-error message status nil))
-  ([message status data]
-   {:via/reply (merge {:status status}
-                      (when (or message data)
-                        {:body (merge
-                                (when message {:message message})
-                                (when data {:data data}))}))}))
-
 (defn tx-ret-schema
   [schema]
   [:multi {::outstrument true
@@ -93,16 +83,20 @@
                   (update-in result# [:via/reply :body] coerce-body#)
                   (coerce-body# result#)))
               (catch Exception e#
+
                 (or (when-let [data# (ex-data e#)]
                       (when-let [schema# (:schema data#)]
-                        (let [schema# (m/form schema#)]
-                          (when (and (= :multi (first schema#))
-                                     (::outstrument (second schema#)))
-                            (let [error-data# {:explain data# :human (me/humanize data#)}]
-                              (if (-> data# :value :via/reply)
-                                (throw (ex-info "Output validation failed"
-                                                (merge {::out-error (assoc-in error-data# [:explain :schema] ~orig-ret-schema)}
-                                                       (reply-error "Output validation failed." 500 (pr-str data#)))))
-                                (let [explain# (m/explain ~orig-ret-schema (:value data#))]
-                                  (throw (ex-info (.getLocalizedMessage e#) error-data#)))))))))
+                        (let [outbound?# (and (:value data#)
+                                              (map? (:value data#))
+                                              (contains? (:value data#) :via/reply))]
+                          (if outbound?#
+                            {:via/reply {:status 500
+                                         :body {:error :outbound-schema-validation-error
+                                                :message "Outstrument schema validation error."
+                                                :explain {:schema (m/form ~orig-ret-schema)}}}}
+                            {:via/reply {:status 400
+                                         :body {:error :inbound-schema-validation-error
+                                                :message "Instrument schema validation error."
+                                                :explain {:schema (last (m/form schema#))
+                                                          :value (second (:value data#))}}}}))))
                     (throw e#))))))))
