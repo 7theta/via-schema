@@ -94,12 +94,17 @@
                                                (contains? (first args#) :event)))
                               outbound?# (and (= :multi (first schema#))
                                               (::outstrument (second schema#)))
+                              query# (if event?#
+                                       (vec (second args#))
+                                       (vec args#))
                               error-body# (if outbound?#
                                             {:error :outbound-schema-validation-error
                                              :message "Outstrument schema validation error."
+                                             :event query#
                                              :explain {:schema (m/form ~orig-ret-schema)}}
                                             {:error :inbound-schema-validation-error
                                              :message "Instrument schema validation error."
+                                             :event query#
                                              :explain {:schema (last schema#)
                                                        :value (second (:value data#))}})]
                           (if event?#
